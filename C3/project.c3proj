@@ -1,31 +1,279 @@
 {
 	"projectFormatVersion": 1,
 	"savedWithRelease": 40702,
-	"name": "Scavengers",
+	"name": "Scavangers",
 	"runtime": "c3",
 	"useWorker": "auto",
 	"bundleAddons": false,
-	"usedAddons": [],
-	"uniqueId": "b6tp3n5key5",
+	"usedAddons": [
+		{
+			"type": "plugin",
+			"id": "Browser",
+			"name": "Browser",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "plugin",
+			"id": "Button",
+			"name": "Button",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "plugin",
+			"id": "DrawingCanvas",
+			"name": "Drawing canvas",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "plugin",
+			"id": "Keyboard",
+			"name": "Keyboard",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "plugin",
+			"id": "List",
+			"name": "List",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "plugin",
+			"id": "Mouse",
+			"name": "Mouse",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "plugin",
+			"id": "PlatformInfo",
+			"name": "Platform info",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "plugin",
+			"id": "Sprite",
+			"name": "Sprite",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "plugin",
+			"id": "Text",
+			"name": "Text",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "plugin",
+			"id": "Tilemap",
+			"name": "Tilemap",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "plugin",
+			"id": "Touch",
+			"name": "Touch",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "plugin",
+			"id": "sliderbar",
+			"name": "Slider bar",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "behavior",
+			"id": "Bullet",
+			"name": "Bullet",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "behavior",
+			"id": "Orbit",
+			"name": "Orbit",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "behavior",
+			"id": "Physics",
+			"name": "Physics",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "behavior",
+			"id": "Pin",
+			"name": "Pin",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "behavior",
+			"id": "Platform",
+			"name": "Platform",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "behavior",
+			"id": "Timer",
+			"name": "Timer",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "behavior",
+			"id": "Tween",
+			"name": "Tween",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "behavior",
+			"id": "bound",
+			"name": "Bound to layout",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "behavior",
+			"id": "destroy",
+			"name": "Destroy outside layout",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "behavior",
+			"id": "scrollto",
+			"name": "Scroll To",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "behavior",
+			"id": "solid",
+			"name": "Solid",
+			"author": "Scirra",
+			"bundled": false
+		},
+		{
+			"type": "effect",
+			"id": "FoozleCC_ProceduralLighting",
+			"name": "ProceduralLighting",
+			"author": "FoozleCC",
+			"bundled": false,
+			"version": "1.1.3.0"
+		}
+	],
+	"uniqueId": "5hh4oy1fiab",
 	"objectTypes": {
 		"items": [],
-		"subfolders": []
+		"subfolders": [
+			{
+				"items": [
+					"ambientBlueVal",
+					"ambientColorBlue",
+					"ambientColorGreen",
+					"ambientColorRed",
+					"ambientGreenVal",
+					"ambientLuminosity",
+					"ambientRedVal",
+					"ambLuminVal",
+					"background",
+					"bloodCanvas",
+					"bloodDrop",
+					"Browser",
+					"colorBlue",
+					"colorBlueVal",
+					"colorGreen",
+					"colorGreenVal",
+					"colorRed",
+					"colorRedVal",
+					"decorations",
+					"dimmer",
+					"dimmerVal",
+					"distanceLimit",
+					"distanceLimitVal",
+					"edgeTrigger",
+					"effectParameter",
+					"falloffV1",
+					"falloffV1Val",
+					"falloffV2",
+					"falloffV2Val",
+					"falloffV3",
+					"falloffV3Val",
+					"Fire",
+					"hitCheck",
+					"Keyboard",
+					"landEffect",
+					"lightingControlsToggle",
+					"lightNumberList",
+					"lightNumberText",
+					"luminosity",
+					"luminosityVal",
+					"Mouse",
+					"normalDepth",
+					"normalDepthVal",
+					"onOff",
+					"PlatformInfo",
+					"player",
+					"playerArt",
+					"ratcher",
+					"ratcherArt",
+					"runEffect",
+					"splatterAnimated",
+					"splatterStatic",
+					"Sprite",
+					"stateText",
+					"tileset",
+					"tilesetBackground",
+					"Torch",
+					"Touch",
+					"xPosition",
+					"xPositionVal",
+					"yPosition",
+					"yPositionVal",
+					"zPosition",
+					"zPositionVal"
+				],
+				"subfolders": [],
+				"name": "Lighting"
+			}
+		]
 	},
 	"autosaveData": null,
 	"containers": [],
 	"families": {
-		"items": [],
+		"items": [
+			"enemies",
+			"NormalMaps_Tilemaps",
+			"NormalMaps",
+			"light"
+		],
 		"subfolders": []
 	},
 	"layouts": {
 		"items": [
-			"Layout 1"
+			"Light Test",
+			"Game Test"
 		],
 		"subfolders": []
 	},
 	"eventSheets": {
 		"items": [
-			"Event sheet 1"
+			"Event sheet 1",
+			"proceduralLighting"
 		],
 		"subfolders": []
 	},
@@ -47,7 +295,16 @@
 			"subfolders": []
 		},
 		"font": {
-			"items": [],
+			"items": [
+				{
+					"name": "Early GameBoy.ttf",
+					"type": "application/font-sfnt",
+					"sid": 699653414254705,
+					"file-info": {
+						"purpose": "none"
+					}
+				}
+			],
 			"subfolders": []
 		},
 		"icon": {
@@ -55,7 +312,7 @@
 				{
 					"name": "icon-16.png",
 					"type": "image/png",
-					"sid": 341498912493184,
+					"sid": 245200592531024,
 					"icon-info": {
 						"purpose": "app-icon"
 					}
@@ -63,7 +320,7 @@
 				{
 					"name": "icon-32.png",
 					"type": "image/png",
-					"sid": 865164776769413,
+					"sid": 671641773969761,
 					"icon-info": {
 						"purpose": "app-icon"
 					}
@@ -71,7 +328,7 @@
 				{
 					"name": "icon-64.png",
 					"type": "image/png",
-					"sid": 997471862287511,
+					"sid": 372346992219419,
 					"icon-info": {
 						"purpose": "app-icon"
 					}
@@ -79,7 +336,7 @@
 				{
 					"name": "icon-128.png",
 					"type": "image/png",
-					"sid": 394172246939033,
+					"sid": 171539572243189,
 					"icon-info": {
 						"purpose": "app-icon"
 					}
@@ -87,7 +344,7 @@
 				{
 					"name": "icon-256.png",
 					"type": "image/png",
-					"sid": 930206921812224,
+					"sid": 857482205436567,
 					"icon-info": {
 						"purpose": "app-icon"
 					}
@@ -95,7 +352,7 @@
 				{
 					"name": "icon-512.png",
 					"type": "image/png",
-					"sid": 992421443890610,
+					"sid": 386369381472705,
 					"icon-info": {
 						"purpose": "app-icon"
 					}
@@ -103,7 +360,7 @@
 				{
 					"name": "loading-logo.png",
 					"type": "image/png",
-					"sid": 381335537329254,
+					"sid": 433154384785274,
 					"icon-info": {
 						"purpose": "loading-logo"
 					}
@@ -117,9 +374,7 @@
 		}
 	},
 	"timelines": {
-		"items": [
-			"Timeline 1"
-		],
+		"items": [],
 		"subfolders": [
 			{
 				"items": [],
@@ -133,7 +388,7 @@
 	},
 	"properties": {
 		"description": "",
-		"version": "1.0.0.0",
+		"version": "0.0.2",
 		"author": "",
 		"authorEmail": "",
 		"authorWebsite": "",
@@ -142,9 +397,9 @@
 		"zAxisScale": "normalized",
 		"fov": 0.7853981633974483,
 		"useLoaderLayout": false,
-		"fullscreenMode": "letterbox-integer-scale",
+		"fullscreenMode": "letterbox-scale",
 		"fullscreenQuality": "high",
-		"viewportFit": "cover",
+		"viewportFit": "auto",
 		"backgroundColor": [
 			0,
 			0,
@@ -164,27 +419,27 @@
 			1,
 			0
 		],
-		"orientations": "landscape",
+		"orientations": "any",
 		"webgpu": "auto",
 		"gpuPreference": "high-performance",
 		"scriptsType": "module",
-		"framerateMode": "unlimited-frame",
+		"framerateMode": "vsync",
 		"sampling": "nearest",
-		"downscaling": "high",
-		"renderingMode": "2d",
-		"anisotropicFiltering": "16x",
+		"downscaling": "medium",
+		"renderingMode": "auto",
+		"anisotropicFiltering": "auto",
 		"zNear": 1,
 		"zFar": 10000,
-		"maxSpriteSheetSize": 4096,
-		"loaderStyle": "splash",
+		"maxSpriteSheetSize": 2048,
+		"loaderStyle": "progress-logo",
 		"preloadSounds": true,
 		"cordovaiOSScheme": "app",
-		"cordovaAndroidScheme": "https",
+		"cordovaAndroidScheme": "file",
 		"autoReloadScriptsOnPreview": false,
-		"exportFileStructure": "folders",
+		"exportFileStructure": "flat",
 		"uidAllocationMode": "increment"
 	},
-	"viewportWidth": 854,
-	"viewportHeight": 480,
+	"viewportWidth": 640,
+	"viewportHeight": 360,
 	"firstLayout": null
 }

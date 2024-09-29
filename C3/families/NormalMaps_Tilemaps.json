@@ -1,0 +1,17 @@
+{
+	"name": "NormalMaps_Tilemaps",
+	"plugin-id": "Tilemap",
+	"sid": 642486013840786,
+	"instanceVariables": [],
+	"behaviorTypes": [],
+	"effectTypes": [
+		{
+			"effectId": "FoozleCC_ProceduralLighting",
+			"name": "ProceduralLighting"
+		}
+	],
+	"members": [
+		"decorations",
+		"tileset"
+	]
+}

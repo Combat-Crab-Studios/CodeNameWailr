@@ -1,0 +1,14 @@
+{
+	"name": "bloodCanvas",
+	"plugin-id": "DrawingCanvas",
+	"sid": 516224819292098,
+	"isGlobal": false,
+	"instanceVariables": [],
+	"behaviorTypes": [],
+	"effectTypes": [
+		{
+			"effectId": "FoozleCC_ProceduralLighting",
+			"name": "ProceduralLighting"
+		}
+	]
+}

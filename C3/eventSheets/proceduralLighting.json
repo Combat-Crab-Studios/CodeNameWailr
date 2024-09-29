@@ -1,0 +1,2584 @@
+{
+	"name": "proceduralLighting",
+	"events": [
+		{
+			"eventType": "comment",
+			"text": "This is a demo example of using a modified plugin I created from modifying other plugins (see below) to produced a procedural lighting effect for up to 50 lights.  I updated / combined 2 different existing plugins by Mikal / kindeyegames with his permission which were also ports of other effects.  I liked different aspects of both the below, primarily I wanted the normal maps to be generated automatically to save me time, and I preferred the controls of the NormalMapExtended but also wanted to increase the light count from 3 to 50.\n\nNormalMapExtended: Mikal, ported from donelwero and matriax\nhttps://www.construct.net/en/make-games/addons/194/normalmapextended\n\nNormalMapProcedural: Mikal, ported from https://www.shadertoy.com/view/4ss3W7\nhttps://www.construct.net/en/make-games/addons/350/normalmapprocedural\n\n1.1.2 Update: Added the ability to turn Light 1 On/Off and made it apparent that you can dim the light by setting the \"Light X State 0/1\" parameter to something in between such as 0.5.\n\nAdditional note, while the number of lights has been increased, as you go up in lights, you will notice performance start to take a hit on CPU.  I personally noted about a ~30% range in CPU between 1 and 50 lights.\n\n1.1.3 Update: Fixed (hopefully) a bug for OSX which had issues with effects stacking.\n\n1.1.3.1 Update: Added example equations for how to set WW, WH, WWL, WHL and light X and Y when Fullscreen quality is set to \"High\" in project settings.  Current project uses \"Low\" so it is toggled to disabled but wanted to add as a reference.\n\n1.1.3.2 Update: Used the newer and more reliable equations for setting WW, WH, WWL, WHL and light X and Y when Fullscreen quality is set to \"High\" in project settings.  Current project uses \"Low\" so it is toggled to disabled but wanted to add as a reference.\n\n1.1.3.3 Update: My \"newer and more reliable equations\" in 1.1.3.2 were wrong! I have updated the equations and they are now accurate as far as I can tell for \"High\".  I am going to save 2 project files, one for high and one for low quality fullscreen options.\n\nGood luck!\nFoozleCC"
+		},
+		{
+			"eventType": "variable",
+			"name": "WW",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 803839381558322
+		},
+		{
+			"eventType": "variable",
+			"name": "WH",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 677438094454563
+		},
+		{
+			"eventType": "comment",
+			"text": "Needed for low full screen quality"
+		},
+		{
+			"eventType": "variable",
+			"name": "viewportToCanvasRatio",
+			"type": "number",
+			"initialValue": "0",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 482050063006421
+		},
+		{
+			"eventType": "comment",
+			"text": "-"
+		},
+		{
+			"eventType": "variable",
+			"name": "normalDepth_start",
+			"type": "number",
+			"initialValue": "2",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 805533257352786
+		},
+		{
+			"eventType": "variable",
+			"name": "distance_start",
+			"type": "number",
+			"initialValue": "1",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 433796129273666
+		},
+		{
+			"eventType": "variable",
+			"name": "zPosition_start",
+			"type": "number",
+			"initialValue": "0.1",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 764185657835196
+		},
+		{
+			"eventType": "variable",
+			"name": "colorRed_start",
+			"type": "number",
+			"initialValue": "1",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 132788654491287
+		},
+		{
+			"eventType": "variable",
+			"name": "colorGreen_start",
+			"type": "number",
+			"initialValue": "1",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 267064605215804
+		},
+		{
+			"eventType": "variable",
+			"name": "colorBlue_start",
+			"type": "number",
+			"initialValue": "1",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 847581707626701
+		},
+		{
+			"eventType": "variable",
+			"name": "luminosity_start",
+			"type": "number",
+			"initialValue": "0.5",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 489101612439701
+		},
+		{
+			"eventType": "variable",
+			"name": "ambientRed_start",
+			"type": "number",
+			"initialValue": "0.5",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 973633328537186
+		},
+		{
+			"eventType": "variable",
+			"name": "ambientGreen_start",
+			"type": "number",
+			"initialValue": "0.5",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 785429828653441
+		},
+		{
+			"eventType": "variable",
+			"name": "ambientBlue_start",
+			"type": "number",
+			"initialValue": "0.5",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 858250586190759
+		},
+		{
+			"eventType": "variable",
+			"name": "ambientLuminosity_start",
+			"type": "number",
+			"initialValue": "0.2",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 940368640669675
+		},
+		{
+			"eventType": "variable",
+			"name": "falloffV1_start",
+			"type": "number",
+			"initialValue": "0.1",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 102511245179921
+		},
+		{
+			"eventType": "variable",
+			"name": "falloffV2_start",
+			"type": "number",
+			"initialValue": "2",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 120061420132596
+		},
+		{
+			"eventType": "variable",
+			"name": "falloffV3_start",
+			"type": "number",
+			"initialValue": "2",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 944667771301244
+		},
+		{
+			"eventType": "variable",
+			"name": "dimmer_start",
+			"type": "number",
+			"initialValue": "1",
+			"comment": "",
+			"isStatic": false,
+			"isConstant": false,
+			"sid": 809742558402810
+		},
+		{
+			"eventType": "block",
+			"conditions": [
+				{
+					"id": "on-start-of-layout",
+					"objectClass": "System",
+					"sid": 483015559323903
+				}
+			],
+			"actions": [
+				{
+					"id": "set-value",
+					"objectClass": "normalDepth",
+					"sid": 981835346413139,
+					"parameters": {
+						"value": "normalDepth_start"
+					}
+				},
+				{
+					"id": "set-value",
+					"objectClass": "distanceLimit",
+					"sid": 300109068348316,
+					"parameters": {
+						"value": "distance_start"
+					}
+				},
+				{
+					"id": "set-maximum",
+					"objectClass": "xPosition",
+					"sid": 938063817280193,
+					"parameters": {
+						"maximum": "LayoutWidth"
+					}
+				},
+				{
+					"id": "set-maximum",
+					"objectClass": "yPosition",
+					"sid": 843775462215538,
+					"parameters": {
+						"maximum": "LayoutHeight"
+					}
+				}
+			],
+			"sid": 961545782683175,
+			"children": [
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "for-each",
+							"objectClass": "System",
+							"sid": 250121560796870,
+							"parameters": {
+								"object": "light"
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "set-instvar-value",
+							"objectClass": "light",
+							"sid": 137637929603746,
+							"parameters": {
+								"instance-variable": "zPosition",
+								"value": "zPosition_start"
+							}
+						},
+						{
+							"id": "set-instvar-value",
+							"objectClass": "light",
+							"sid": 939612423931954,
+							"parameters": {
+								"instance-variable": "colorRed",
+								"value": "colorRed_start"
+							}
+						},
+						{
+							"id": "set-instvar-value",
+							"objectClass": "light",
+							"sid": 733418395739683,
+							"parameters": {
+								"instance-variable": "colorGreen",
+								"value": "colorGreen_start"
+							}
+						},
+						{
+							"id": "set-instvar-value",
+							"objectClass": "light",
+							"sid": 255682841587456,
+							"parameters": {
+								"instance-variable": "colorBlue",
+								"value": "colorBlue_start"
+							}
+						},
+						{
+							"id": "set-instvar-value",
+							"objectClass": "light",
+							"sid": 816984670403767,
+							"parameters": {
+								"instance-variable": "luminosity",
+								"value": "luminosity_start"
+							}
+						},
+						{
+							"id": "set-instvar-value",
+							"objectClass": "light",
+							"sid": 463991255547538,
+							"parameters": {
+								"instance-variable": "ambientColorRed",
+								"value": "ambientRed_start"
+							}
+						},
+						{
+							"id": "set-instvar-value",
+							"objectClass": "light",
+							"sid": 763479242621062,
+							"parameters": {
+								"instance-variable": "ambientColorGreen",
+								"value": "ambientGreen_start"
+							}
+						},
+						{
+							"id": "set-instvar-value",
+							"objectClass": "light",
+							"sid": 355426132678761,
+							"parameters": {
+								"instance-variable": "ambientColorBlue",
+								"value": "ambientBlue_start"
+							}
+						},
+						{
+							"id": "set-instvar-value",
+							"objectClass": "light",
+							"sid": 798870952821701,
+							"parameters": {
+								"instance-variable": "ambientLuminosity",
+								"value": "ambientLuminosity_start"
+							}
+						},
+						{
+							"id": "set-instvar-value",
+							"objectClass": "light",
+							"sid": 418043719846899,
+							"parameters": {
+								"instance-variable": "distance",
+								"value": "distance_start"
+							}
+						},
+						{
+							"id": "set-instvar-value",
+							"objectClass": "light",
+							"sid": 432061262253534,
+							"parameters": {
+								"instance-variable": "falloffV1",
+								"value": "falloffV1_start"
+							}
+						},
+						{
+							"id": "set-instvar-value",
+							"objectClass": "light",
+							"sid": 237928156969689,
+							"parameters": {
+								"instance-variable": "falloffV2",
+								"value": "falloffV2_start"
+							}
+						},
+						{
+							"id": "set-instvar-value",
+							"objectClass": "light",
+							"sid": 343156341802820,
+							"parameters": {
+								"instance-variable": "falloffV3",
+								"value": "falloffV3_start"
+							}
+						},
+						{
+							"id": "set-instvar-value",
+							"objectClass": "light",
+							"sid": 253564392870270,
+							"parameters": {
+								"instance-variable": "dimmer",
+								"value": "dimmer_start"
+							}
+						}
+					],
+					"sid": 657081921416190,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [],
+							"actions": [],
+							"sid": 262445527359516
+						}
+					]
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "for-each-ordered",
+							"objectClass": "System",
+							"sid": 870026411831670,
+							"parameters": {
+								"object": "light",
+								"expression": "light.lightNumber",
+								"order": "ascending"
+							}
+						}
+					],
+					"actions": [],
+					"sid": 935293298075273,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "light",
+									"sid": 971838932640917,
+									"parameters": {
+										"instance-variable": "lightNumber",
+										"comparison": 0,
+										"value": "1"
+									}
+								},
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "light",
+									"sid": 852890224304864,
+									"parameters": {
+										"instance-variable": "lightNumber",
+										"comparison": 0,
+										"value": "2"
+									}
+								},
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "light",
+									"sid": 349261765139495,
+									"disabled": true,
+									"parameters": {
+										"instance-variable": "lightNumber",
+										"comparison": 0,
+										"value": "3"
+									}
+								},
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "light",
+									"sid": 162876629968053,
+									"disabled": true,
+									"parameters": {
+										"instance-variable": "lightNumber",
+										"comparison": 0,
+										"value": "4"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-boolean-instvar",
+									"objectClass": "light",
+									"sid": 488071447344045,
+									"parameters": {
+										"instance-variable": "onOff",
+										"value": "true"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps",
+									"sid": 386373610901908,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "3+(loopindex)*16",
+										"value": "1"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps_Tilemaps",
+									"sid": 202006212393306,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "3+(loopindex)*16",
+										"value": "1"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "bloodCanvas",
+									"sid": 115189444666966,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "3+(loopindex)*16",
+										"value": "1"
+									}
+								}
+							],
+							"sid": 894889178472835,
+							"isOrBlock": true
+						}
+					]
+				}
+			]
+		},
+		{
+			"eventType": "block",
+			"conditions": [
+				{
+					"id": "every-tick",
+					"objectClass": "System",
+					"sid": 957283985468618
+				}
+			],
+			"actions": [
+				{
+					"type": "comment",
+					"text": "Updated to use variables to account for pixel ratio when using Fullscreen quality High."
+				},
+				{
+					"id": "set-eventvar-value",
+					"objectClass": "System",
+					"sid": 456496057390780,
+					"parameters": {
+						"variable": "WW",
+						"value": "PlatformInfo.CanvasCssWidth*PlatformInfo.DevicePixelRatio"
+					}
+				},
+				{
+					"id": "set-eventvar-value",
+					"objectClass": "System",
+					"sid": 437181128784829,
+					"parameters": {
+						"variable": "WH",
+						"value": "PlatformInfo.CanvasCssHeight*PlatformInfo.DevicePixelRatio"
+					}
+				},
+				{
+					"type": "comment",
+					"text": "Updated to use variables to account for pixel ratio when using Fullscreen quality Low."
+				},
+				{
+					"id": "set-eventvar-value",
+					"objectClass": "System",
+					"sid": 772138354606745,
+					"disabled": true,
+					"parameters": {
+						"variable": "viewportToCanvasRatio",
+						"value": "ViewportWidth(\"lighting\") / PlatformInfo.CanvasCssWidth"
+					}
+				},
+				{
+					"id": "set-eventvar-value",
+					"objectClass": "System",
+					"sid": 401143114653351,
+					"disabled": true,
+					"parameters": {
+						"variable": "WW",
+						"value": "ViewportWidth(\"lighting\")*min(1,PlatformInfo.DevicePixelRatio/viewportToCanvasRatio)"
+					}
+				},
+				{
+					"id": "set-eventvar-value",
+					"objectClass": "System",
+					"sid": 498463738924940,
+					"disabled": true,
+					"parameters": {
+						"variable": "WH",
+						"value": "ViewportHeight(\"lighting\")*min(1,PlatformInfo.DevicePixelRatio/viewportToCanvasRatio)"
+					}
+				},
+				{
+					"type": "comment",
+					"text": ""
+				},
+				{
+					"id": "set-position",
+					"objectClass": "Fire",
+					"sid": 147351553089283,
+					"parameters": {
+						"x": "Mouse.X",
+						"y": "Mouse.Y"
+					}
+				},
+				{
+					"type": "comment",
+					"text": ""
+				},
+				{
+					"id": "set-effect-parameter",
+					"objectClass": "NormalMaps",
+					"sid": 502716360025555,
+					"parameters": {
+						"effect": "\"ProceduralLighting\"",
+						"parameter-index": "0",
+						"value": "WW"
+					}
+				},
+				{
+					"id": "set-effect-parameter",
+					"objectClass": "NormalMaps",
+					"sid": 312774042936815,
+					"parameters": {
+						"effect": "\"ProceduralLighting\"",
+						"parameter-index": "1",
+						"value": "WH"
+					}
+				},
+				{
+					"id": "set-effect-parameter",
+					"objectClass": "NormalMaps_Tilemaps",
+					"sid": 278814060984079,
+					"parameters": {
+						"effect": "\"ProceduralLighting\"",
+						"parameter-index": "0",
+						"value": "WW"
+					}
+				},
+				{
+					"id": "set-effect-parameter",
+					"objectClass": "NormalMaps_Tilemaps",
+					"sid": 569950278933947,
+					"parameters": {
+						"effect": "\"ProceduralLighting\"",
+						"parameter-index": "1",
+						"value": "WH"
+					}
+				},
+				{
+					"id": "set-effect-parameter",
+					"objectClass": "bloodCanvas",
+					"sid": 797823756531962,
+					"parameters": {
+						"effect": "\"ProceduralLighting\"",
+						"parameter-index": "0",
+						"value": "WW"
+					}
+				},
+				{
+					"id": "set-effect-parameter",
+					"objectClass": "bloodCanvas",
+					"sid": 143552951960775,
+					"parameters": {
+						"effect": "\"ProceduralLighting\"",
+						"parameter-index": "1",
+						"value": "WH"
+					}
+				}
+			],
+			"sid": 102132784418671,
+			"children": [
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "for-each-ordered",
+							"objectClass": "System",
+							"sid": 874232568537971,
+							"parameters": {
+								"object": "light",
+								"expression": "light.lightNumber",
+								"order": "ascending"
+							}
+						}
+					],
+					"actions": [],
+					"sid": 182771833494362,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-boolean-instance-variable-set",
+									"objectClass": "light",
+									"sid": 894916689725999,
+									"parameters": {
+										"instance-variable": "onOff"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps",
+									"sid": 913632644252150,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "3+(loopindex)*16",
+										"value": "light.dimmer"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps_Tilemaps",
+									"sid": 332938369136660,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "3+(loopindex)*16",
+										"value": "light.dimmer"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "bloodCanvas",
+									"sid": 587784062626404,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "3+(loopindex)*16",
+										"value": "light.dimmer"
+									}
+								}
+							],
+							"sid": 330872051095660
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-boolean-instance-variable-set",
+									"objectClass": "light",
+									"sid": 735398995501089,
+									"parameters": {
+										"instance-variable": "onOff"
+									},
+									"isInverted": true
+								}
+							],
+							"actions": [
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps",
+									"sid": 805903741274307,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "3+(light.lightNumber-1)*16",
+										"value": "0"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps_Tilemaps",
+									"sid": 743717756817570,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "3+(light.lightNumber-1)*16",
+										"value": "0"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "bloodCanvas",
+									"sid": 418333410983246,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "3+(light.lightNumber-1)*16",
+										"value": "0"
+									}
+								}
+							],
+							"sid": 856625087648535
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-boolean-instance-variable-set",
+									"objectClass": "light",
+									"sid": 811825058527318,
+									"parameters": {
+										"instance-variable": "onOff"
+									}
+								}
+							],
+							"actions": [
+								{
+									"type": "comment",
+									"text": "Updated to use variables to account for pixel ratio when using Fullscreen quality High."
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps",
+									"sid": 654096687455682,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "4+(loopindex)*16",
+										"value": "(LayerToCanvasX(\"lighting\", light.X, light.Y)*PlatformInfo.DevicePixelRatio)/WW"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps",
+									"sid": 409948993028512,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "5+(loopindex)*16",
+										"value": "(LayerToCanvasY(\"lighting\", light.X, light.Y)*PlatformInfo.DevicePixelRatio)/WH"
+									}
+								},
+								{
+									"type": "comment",
+									"text": "Updated to use variables to account for pixel ratio when using Fullscreen quality Low."
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps",
+									"sid": 569347029792344,
+									"disabled": true,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "4+(loopindex)*16",
+										"value": "((light.X-ViewportLeft(\"lighting\"))/WW)*min(1,PlatformInfo.DevicePixelRatio/viewportToCanvasRatio)"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps",
+									"sid": 819083294701221,
+									"disabled": true,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "5+(loopindex)*16",
+										"value": "((light.Y - ViewportTop(\"lighting\")) / WH) * min(1,PlatformInfo.DevicePixelRatio/viewportToCanvasRatio)"
+									}
+								},
+								{
+									"type": "comment",
+									"text": ""
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps",
+									"sid": 448060994210384,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "6+(loopindex)*16",
+										"value": "light.zPosition"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps",
+									"sid": 363407369499567,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "7+(loopindex)*16",
+										"value": "light.colorRed"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps",
+									"sid": 583976109168932,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "8+(loopindex)*16",
+										"value": "light.colorGreen"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps",
+									"sid": 775561945428206,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "9+(loopindex)*16",
+										"value": "light.colorBlue"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps",
+									"sid": 359993288811972,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "10+(loopindex)*16",
+										"value": "light.luminosity"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps",
+									"sid": 413446379405158,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "11+(loopindex)*16",
+										"value": "light.ambientColorRed"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps",
+									"sid": 803106275915715,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "12+(loopindex)*16",
+										"value": "light.ambientColorGreen"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps",
+									"sid": 786701569664913,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "13+(loopindex)*16",
+										"value": "light.ambientColorBlue"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps",
+									"sid": 262549947370014,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "14+(loopindex)*16",
+										"value": "light.ambientLuminosity"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps",
+									"sid": 340026861232846,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "15+(loopindex)*16",
+										"value": "light.distance"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps",
+									"sid": 618914671073180,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "16+(loopindex)*16",
+										"value": "light.falloffV1"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps",
+									"sid": 845769372206697,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "17+(loopindex)*16",
+										"value": "light.falloffV2"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps",
+									"sid": 553622053770726,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "18+(loopindex)*16",
+										"value": "light.falloffV3"
+									}
+								},
+								{
+									"type": "comment",
+									"text": "Updated to use variables to account for pixel ratio when using Fullscreen quality High."
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps_Tilemaps",
+									"sid": 611741806247146,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "4+(loopindex)*16",
+										"value": "(LayerToCanvasX(\"lighting\", light.X, light.Y)*PlatformInfo.DevicePixelRatio)/WW"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps_Tilemaps",
+									"sid": 699675858926137,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "5+(loopindex)*16",
+										"value": "(LayerToCanvasY(\"lighting\", light.X, light.Y)*PlatformInfo.DevicePixelRatio)/WH"
+									}
+								},
+								{
+									"type": "comment",
+									"text": "Updated to use variables to account for pixel ratio when using Fullscreen quality Low."
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps_Tilemaps",
+									"sid": 518676814238379,
+									"disabled": true,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "4+(loopindex)*16",
+										"value": "((light.X-ViewportLeft(\"lighting\"))/WW)*min(1,PlatformInfo.DevicePixelRatio/viewportToCanvasRatio)"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps_Tilemaps",
+									"sid": 375418237309247,
+									"disabled": true,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "5+(loopindex)*16",
+										"value": "((light.Y - ViewportTop(\"lighting\")) / WH) * min(1,PlatformInfo.DevicePixelRatio/viewportToCanvasRatio)"
+									}
+								},
+								{
+									"type": "comment",
+									"text": ""
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps_Tilemaps",
+									"sid": 997462422848201,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "6+(loopindex)*16",
+										"value": "light.zPosition"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps_Tilemaps",
+									"sid": 630902857783451,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "7+(loopindex)*16",
+										"value": "light.colorRed"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps_Tilemaps",
+									"sid": 314230104148493,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "8+(loopindex)*16",
+										"value": "light.colorGreen"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps_Tilemaps",
+									"sid": 772907489770681,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "9+(loopindex)*16",
+										"value": "light.colorBlue"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps_Tilemaps",
+									"sid": 113985844017120,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "10+(loopindex)*16",
+										"value": "light.luminosity"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps_Tilemaps",
+									"sid": 961880549184851,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "11+(loopindex)*16",
+										"value": "light.ambientColorRed"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps_Tilemaps",
+									"sid": 668953620320913,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "12+(loopindex)*16",
+										"value": "light.ambientColorGreen"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps_Tilemaps",
+									"sid": 416133341592140,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "13+(loopindex)*16",
+										"value": "light.ambientColorBlue"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps_Tilemaps",
+									"sid": 496972621115883,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "14+(loopindex)*16",
+										"value": "light.ambientLuminosity"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps_Tilemaps",
+									"sid": 481785055653191,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "15+(loopindex)*16",
+										"value": "light.distance"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps_Tilemaps",
+									"sid": 549482616704903,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "16+(loopindex)*16",
+										"value": "light.falloffV1"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps_Tilemaps",
+									"sid": 626283257500194,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "17+(loopindex)*16",
+										"value": "light.falloffV2"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "NormalMaps_Tilemaps",
+									"sid": 486184127856434,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "18+(loopindex)*16",
+										"value": "light.falloffV3"
+									}
+								},
+								{
+									"type": "comment",
+									"text": "Updated to use variables to account for pixel ratio when using Fullscreen quality High."
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "bloodCanvas",
+									"sid": 359407893935350,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "4+(loopindex)*16",
+										"value": "(LayerToCanvasX(\"lighting\", light.X, light.Y)*PlatformInfo.DevicePixelRatio)/WW"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "bloodCanvas",
+									"sid": 354324621783906,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "5+(loopindex)*16",
+										"value": "(LayerToCanvasY(\"lighting\", light.X, light.Y)*PlatformInfo.DevicePixelRatio)/WH"
+									}
+								},
+								{
+									"type": "comment",
+									"text": "Updated to use variables to account for pixel ratio when using Fullscreen quality Low."
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "bloodCanvas",
+									"sid": 625924834586428,
+									"disabled": true,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "4+(loopindex)*16",
+										"value": "((light.X-ViewportLeft(\"lighting\"))/WW)*min(1,PlatformInfo.DevicePixelRatio/viewportToCanvasRatio)"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "bloodCanvas",
+									"sid": 502030332740779,
+									"disabled": true,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "5+(loopindex)*16",
+										"value": "((light.Y - ViewportTop(\"lighting\")) / WH) * min(1,PlatformInfo.DevicePixelRatio/viewportToCanvasRatio)"
+									}
+								},
+								{
+									"type": "comment",
+									"text": ""
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "bloodCanvas",
+									"sid": 875697814422851,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "6+(loopindex)*16",
+										"value": "light.zPosition"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "bloodCanvas",
+									"sid": 329884319842840,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "7+(loopindex)*16",
+										"value": "light.colorRed"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "bloodCanvas",
+									"sid": 293278236553557,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "8+(loopindex)*16",
+										"value": "light.colorGreen"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "bloodCanvas",
+									"sid": 991889470420645,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "9+(loopindex)*16",
+										"value": "light.colorBlue"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "bloodCanvas",
+									"sid": 771501363470670,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "10+(loopindex)*16",
+										"value": "light.luminosity"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "bloodCanvas",
+									"sid": 246466114186771,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "11+(loopindex)*16",
+										"value": "light.ambientColorRed"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "bloodCanvas",
+									"sid": 866627837195839,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "12+(loopindex)*16",
+										"value": "light.ambientColorGreen"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "bloodCanvas",
+									"sid": 171883291877317,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "13+(loopindex)*16",
+										"value": "light.ambientColorBlue"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "bloodCanvas",
+									"sid": 399445766556840,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "14+(loopindex)*16",
+										"value": "light.ambientLuminosity"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "bloodCanvas",
+									"sid": 895231153411036,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "15+(loopindex)*16",
+										"value": "light.distance"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "bloodCanvas",
+									"sid": 854930720291225,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "16+(loopindex)*16",
+										"value": "light.falloffV1"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "bloodCanvas",
+									"sid": 443490106058784,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "17+(loopindex)*16",
+										"value": "light.falloffV2"
+									}
+								},
+								{
+									"id": "set-effect-parameter",
+									"objectClass": "bloodCanvas",
+									"sid": 773857332680710,
+									"parameters": {
+										"effect": "\"proceduralLighting\"",
+										"parameter-index": "18+(loopindex)*16",
+										"value": "light.falloffV3"
+									}
+								}
+							],
+							"sid": 548029528537710
+						},
+						{
+							"eventType": "block",
+							"conditions": [],
+							"actions": [],
+							"sid": 373180397994666
+						}
+					]
+				}
+			]
+		},
+		{
+			"eventType": "group",
+			"disabled": false,
+			"title": "controlPanel",
+			"description": "",
+			"isActiveOnStart": true,
+			"children": [
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "is-checked",
+							"objectClass": "lightingControlsToggle",
+							"sid": 993778891859665
+						}
+					],
+					"actions": [
+						{
+							"id": "set-layer-visible",
+							"objectClass": "System",
+							"sid": 769619459115125,
+							"parameters": {
+								"layer": "\"lightingControls\"",
+								"visibility": "visible"
+							}
+						}
+					],
+					"sid": 814691552149093
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "else",
+							"objectClass": "System",
+							"sid": 544755156022252
+						}
+					],
+					"actions": [
+						{
+							"id": "set-layer-visible",
+							"objectClass": "System",
+							"sid": 346661610573526,
+							"parameters": {
+								"layer": "\"lightingControls\"",
+								"visibility": "invisible"
+							}
+						}
+					],
+					"sid": 468967721743575
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "on-clicked",
+							"objectClass": "lightingControlsToggle",
+							"sid": 335692063978514
+						},
+						{
+							"id": "compare-instance-variable",
+							"objectClass": "light",
+							"sid": 512500093472370,
+							"parameters": {
+								"instance-variable": "lightNumber",
+								"comparison": 0,
+								"value": "int(lightNumberList.SelectedIndex)+1"
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "set-value",
+							"objectClass": "xPosition",
+							"sid": 692169256011185,
+							"parameters": {
+								"value": "light.X"
+							}
+						},
+						{
+							"id": "set-value",
+							"objectClass": "yPosition",
+							"sid": 665751757401245,
+							"parameters": {
+								"value": "light.Y"
+							}
+						},
+						{
+							"id": "set-value",
+							"objectClass": "zPosition",
+							"sid": 193273755610119,
+							"parameters": {
+								"value": "light.zPosition"
+							}
+						},
+						{
+							"id": "set-value",
+							"objectClass": "colorRed",
+							"sid": 965315920754281,
+							"parameters": {
+								"value": "light.colorRed"
+							}
+						},
+						{
+							"id": "set-value",
+							"objectClass": "colorBlue",
+							"sid": 189436753012724,
+							"parameters": {
+								"value": "light.colorBlue"
+							}
+						},
+						{
+							"id": "set-value",
+							"objectClass": "colorGreen",
+							"sid": 273009514129695,
+							"parameters": {
+								"value": "light.colorGreen"
+							}
+						},
+						{
+							"id": "set-value",
+							"objectClass": "luminosity",
+							"sid": 662531761377376,
+							"parameters": {
+								"value": "light.luminosity"
+							}
+						},
+						{
+							"id": "set-value",
+							"objectClass": "ambientColorRed",
+							"sid": 772346446614797,
+							"parameters": {
+								"value": "light.ambientColorRed"
+							}
+						},
+						{
+							"id": "set-value",
+							"objectClass": "ambientColorGreen",
+							"sid": 860264545399086,
+							"parameters": {
+								"value": "light.ambientColorGreen"
+							}
+						},
+						{
+							"id": "set-value",
+							"objectClass": "ambientColorBlue",
+							"sid": 105160228849547,
+							"parameters": {
+								"value": "light.ambientColorBlue"
+							}
+						},
+						{
+							"id": "set-value",
+							"objectClass": "ambientLuminosity",
+							"sid": 831372865169504,
+							"parameters": {
+								"value": "light.ambientLuminosity"
+							}
+						},
+						{
+							"id": "set-value",
+							"objectClass": "distanceLimit",
+							"sid": 250866480272219,
+							"parameters": {
+								"value": "light.distance"
+							}
+						},
+						{
+							"id": "set-value",
+							"objectClass": "falloffV1",
+							"sid": 640213695097756,
+							"parameters": {
+								"value": "light.falloffV1"
+							}
+						},
+						{
+							"id": "set-value",
+							"objectClass": "falloffV2",
+							"sid": 611911785249723,
+							"parameters": {
+								"value": "light.falloffV2"
+							}
+						},
+						{
+							"id": "set-value",
+							"objectClass": "falloffV3",
+							"sid": 170148002140694,
+							"parameters": {
+								"value": "light.falloffV3"
+							}
+						},
+						{
+							"id": "set-value",
+							"objectClass": "dimmer",
+							"sid": 709552698728351,
+							"parameters": {
+								"value": "light.dimmer"
+							}
+						},
+						{
+							"id": "set-text",
+							"objectClass": "xPositionVal",
+							"sid": 639377212613699,
+							"parameters": {
+								"text": "xPosition.Value"
+							}
+						},
+						{
+							"id": "set-text",
+							"objectClass": "yPositionVal",
+							"sid": 209956821489138,
+							"parameters": {
+								"text": "yPosition.Value"
+							}
+						},
+						{
+							"id": "set-text",
+							"objectClass": "zPositionVal",
+							"sid": 875948255251139,
+							"parameters": {
+								"text": "zPosition.Value"
+							}
+						},
+						{
+							"id": "set-text",
+							"objectClass": "colorRedVal",
+							"sid": 842361669177546,
+							"parameters": {
+								"text": "colorRed.Value"
+							}
+						},
+						{
+							"id": "set-text",
+							"objectClass": "colorGreenVal",
+							"sid": 758543305390973,
+							"parameters": {
+								"text": "colorGreen.Value"
+							}
+						},
+						{
+							"id": "set-text",
+							"objectClass": "colorBlueVal",
+							"sid": 921349284402636,
+							"parameters": {
+								"text": "colorBlue.Value"
+							}
+						},
+						{
+							"id": "set-text",
+							"objectClass": "luminosityVal",
+							"sid": 102016295009411,
+							"parameters": {
+								"text": "luminosity.Value"
+							}
+						},
+						{
+							"id": "set-text",
+							"objectClass": "ambientRedVal",
+							"sid": 671656604372265,
+							"parameters": {
+								"text": "ambientColorRed.Value"
+							}
+						},
+						{
+							"id": "set-text",
+							"objectClass": "ambientGreenVal",
+							"sid": 680519938386204,
+							"parameters": {
+								"text": "ambientColorGreen.Value"
+							}
+						},
+						{
+							"id": "set-text",
+							"objectClass": "ambientBlueVal",
+							"sid": 940068203907972,
+							"parameters": {
+								"text": "ambientColorBlue.Value"
+							}
+						},
+						{
+							"id": "set-text",
+							"objectClass": "ambLuminVal",
+							"sid": 796448164067268,
+							"parameters": {
+								"text": "ambientLuminosity.Value"
+							}
+						},
+						{
+							"id": "set-text",
+							"objectClass": "distanceLimitVal",
+							"sid": 168314178015111,
+							"parameters": {
+								"text": "distanceLimit.Value"
+							}
+						},
+						{
+							"id": "set-text",
+							"objectClass": "falloffV1Val",
+							"sid": 925308945651490,
+							"parameters": {
+								"text": "falloffV1.Value"
+							}
+						},
+						{
+							"id": "set-text",
+							"objectClass": "falloffV2Val",
+							"sid": 331595079392818,
+							"parameters": {
+								"text": "falloffV2.Value"
+							}
+						},
+						{
+							"id": "set-text",
+							"objectClass": "falloffV3Val",
+							"sid": 815121492148284,
+							"parameters": {
+								"text": "falloffV3.Value"
+							}
+						},
+						{
+							"id": "set-text",
+							"objectClass": "dimmerVal",
+							"sid": 962047883451807,
+							"parameters": {
+								"text": "dimmer.Value"
+							}
+						},
+						{
+							"id": "set-visible",
+							"objectClass": "onOff",
+							"sid": 445513000724977,
+							"parameters": {
+								"visibility": "visible"
+							}
+						}
+					],
+					"sid": 663490980129964,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "is-boolean-instance-variable-set",
+									"objectClass": "light",
+									"sid": 683327164220306,
+									"parameters": {
+										"instance-variable": "onOff"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-checked",
+									"objectClass": "onOff",
+									"sid": 529888651179121,
+									"parameters": {
+										"state": "checked"
+									}
+								}
+							],
+							"sid": 115953142594915
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "else",
+									"objectClass": "System",
+									"sid": 214402191558914
+								}
+							],
+							"actions": [
+								{
+									"id": "set-checked",
+									"objectClass": "onOff",
+									"sid": 605806467924588,
+									"parameters": {
+										"state": "unchecked"
+									}
+								}
+							],
+							"sid": 749890811432936
+						},
+						{
+							"eventType": "comment",
+							"text": "The below is no longer needed since 1.1.2.  The Light 1 now has the option to be toggled on and off / dimmed."
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "light",
+									"sid": 138514234392740,
+									"parameters": {
+										"instance-variable": "lightNumber",
+										"comparison": 0,
+										"value": "1"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-visible",
+									"objectClass": "onOff",
+									"sid": 947170721567267,
+									"parameters": {
+										"visibility": "invisible"
+									}
+								}
+							],
+							"sid": 749679950560960,
+							"disabled": true
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "else",
+									"objectClass": "System",
+									"sid": 631327547005288
+								}
+							],
+							"actions": [
+								{
+									"id": "set-visible",
+									"objectClass": "onOff",
+									"sid": 842970504895248,
+									"parameters": {
+										"visibility": "visible"
+									}
+								}
+							],
+							"sid": 343591198374823,
+							"disabled": true
+						}
+					]
+				},
+				{
+					"eventType": "block",
+					"conditions": [
+						{
+							"id": "layer-is-visible",
+							"objectClass": "System",
+							"sid": 268652367561342,
+							"parameters": {
+								"layer": "\"lightingControls\""
+							}
+						}
+					],
+					"actions": [
+						{
+							"id": "set-text",
+							"objectClass": "normalDepthVal",
+							"sid": 606915816102575,
+							"parameters": {
+								"text": "normalDepth.Value"
+							}
+						}
+					],
+					"sid": 826069810382917,
+					"children": [
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "on-selection-changed",
+									"objectClass": "lightNumberList",
+									"sid": 379126838189528
+								},
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "light",
+									"sid": 664512404084793,
+									"parameters": {
+										"instance-variable": "lightNumber",
+										"comparison": 0,
+										"value": "int(lightNumberList.SelectedIndex)+1"
+									}
+								}
+							],
+							"actions": [
+								{
+									"id": "set-value",
+									"objectClass": "xPosition",
+									"sid": 420918091696685,
+									"parameters": {
+										"value": "light.X"
+									}
+								},
+								{
+									"id": "set-value",
+									"objectClass": "yPosition",
+									"sid": 191168359630281,
+									"parameters": {
+										"value": "light.Y"
+									}
+								},
+								{
+									"id": "set-value",
+									"objectClass": "zPosition",
+									"sid": 148537220389868,
+									"parameters": {
+										"value": "light.zPosition"
+									}
+								},
+								{
+									"id": "set-value",
+									"objectClass": "colorRed",
+									"sid": 362185070382425,
+									"parameters": {
+										"value": "light.colorRed"
+									}
+								},
+								{
+									"id": "set-value",
+									"objectClass": "colorBlue",
+									"sid": 107236945606402,
+									"parameters": {
+										"value": "light.colorBlue"
+									}
+								},
+								{
+									"id": "set-value",
+									"objectClass": "colorGreen",
+									"sid": 358111991445762,
+									"parameters": {
+										"value": "light.colorGreen"
+									}
+								},
+								{
+									"id": "set-value",
+									"objectClass": "luminosity",
+									"sid": 334982732219373,
+									"parameters": {
+										"value": "light.luminosity"
+									}
+								},
+								{
+									"id": "set-value",
+									"objectClass": "ambientColorRed",
+									"sid": 599176310877898,
+									"parameters": {
+										"value": "light.ambientColorRed"
+									}
+								},
+								{
+									"id": "set-value",
+									"objectClass": "ambientColorGreen",
+									"sid": 803158803133513,
+									"parameters": {
+										"value": "light.ambientColorGreen"
+									}
+								},
+								{
+									"id": "set-value",
+									"objectClass": "ambientColorBlue",
+									"sid": 251128142976307,
+									"parameters": {
+										"value": "light.ambientColorBlue"
+									}
+								},
+								{
+									"id": "set-value",
+									"objectClass": "ambientLuminosity",
+									"sid": 706093653968995,
+									"parameters": {
+										"value": "light.ambientLuminosity"
+									}
+								},
+								{
+									"id": "set-value",
+									"objectClass": "distanceLimit",
+									"sid": 735770882605063,
+									"parameters": {
+										"value": "light.distance"
+									}
+								},
+								{
+									"id": "set-value",
+									"objectClass": "falloffV1",
+									"sid": 649123210153884,
+									"parameters": {
+										"value": "light.falloffV1"
+									}
+								},
+								{
+									"id": "set-value",
+									"objectClass": "falloffV2",
+									"sid": 220887442616605,
+									"parameters": {
+										"value": "light.falloffV2"
+									}
+								},
+								{
+									"id": "set-value",
+									"objectClass": "falloffV3",
+									"sid": 213303006371380,
+									"parameters": {
+										"value": "light.falloffV3"
+									}
+								},
+								{
+									"id": "set-value",
+									"objectClass": "dimmer",
+									"sid": 548899940613211,
+									"parameters": {
+										"value": "light.dimmer"
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "xPositionVal",
+									"sid": 265957742373800,
+									"parameters": {
+										"text": "xPosition.Value"
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "yPositionVal",
+									"sid": 799575057781797,
+									"parameters": {
+										"text": "yPosition.Value"
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "zPositionVal",
+									"sid": 295247224481130,
+									"parameters": {
+										"text": "zPosition.Value"
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "colorRedVal",
+									"sid": 311162556713914,
+									"parameters": {
+										"text": "colorRed.Value"
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "colorGreenVal",
+									"sid": 705823209185812,
+									"parameters": {
+										"text": "colorGreen.Value"
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "colorBlueVal",
+									"sid": 787866489074342,
+									"parameters": {
+										"text": "colorBlue.Value"
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "luminosityVal",
+									"sid": 877223456695166,
+									"parameters": {
+										"text": "luminosity.Value"
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "ambientRedVal",
+									"sid": 713043165945792,
+									"parameters": {
+										"text": "ambientColorRed.Value"
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "ambientGreenVal",
+									"sid": 769166062019896,
+									"parameters": {
+										"text": "ambientColorGreen.Value"
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "ambientBlueVal",
+									"sid": 789176922029304,
+									"parameters": {
+										"text": "ambientColorBlue.Value"
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "ambLuminVal",
+									"sid": 903508030253096,
+									"parameters": {
+										"text": "ambientLuminosity.Value"
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "distanceLimitVal",
+									"sid": 702287062567025,
+									"parameters": {
+										"text": "distanceLimit.Value"
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "falloffV1Val",
+									"sid": 553726754792731,
+									"parameters": {
+										"text": "falloffV1.Value"
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "falloffV2Val",
+									"sid": 609048833255369,
+									"parameters": {
+										"text": "falloffV2.Value"
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "falloffV3Val",
+									"sid": 510372213574552,
+									"parameters": {
+										"text": "falloffV3.Value"
+									}
+								},
+								{
+									"id": "set-text",
+									"objectClass": "dimmerVal",
+									"sid": 484227328144262,
+									"parameters": {
+										"text": "dimmer.Value"
+									}
+								},
+								{
+									"id": "set-visible",
+									"objectClass": "onOff",
+									"sid": 694760818286459,
+									"parameters": {
+										"visibility": "visible"
+									}
+								}
+							],
+							"sid": 834277002020968,
+							"children": [
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-boolean-instance-variable-set",
+											"objectClass": "light",
+											"sid": 376014849671996,
+											"parameters": {
+												"instance-variable": "onOff"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-checked",
+											"objectClass": "onOff",
+											"sid": 328664093114346,
+											"parameters": {
+												"state": "checked"
+											}
+										}
+									],
+									"sid": 654320251817665
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "else",
+											"objectClass": "System",
+											"sid": 224201706910001
+										}
+									],
+									"actions": [
+										{
+											"id": "set-checked",
+											"objectClass": "onOff",
+											"sid": 273638615621102,
+											"parameters": {
+												"state": "unchecked"
+											}
+										}
+									],
+									"sid": 712259961050295
+								},
+								{
+									"eventType": "comment",
+									"text": "The below is no longer needed since 1.1.2.  The Light 1 now has the option to be toggled on and off / dimmed."
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "light",
+											"sid": 399839734133095,
+											"parameters": {
+												"instance-variable": "lightNumber",
+												"comparison": 0,
+												"value": "1"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-visible",
+											"objectClass": "onOff",
+											"sid": 336412182639692,
+											"parameters": {
+												"visibility": "invisible"
+											}
+										}
+									],
+									"sid": 407824388159764,
+									"disabled": true
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "else",
+											"objectClass": "System",
+											"sid": 236692751531809
+										}
+									],
+									"actions": [
+										{
+											"id": "set-visible",
+											"objectClass": "onOff",
+											"sid": 323932852705718,
+											"parameters": {
+												"visibility": "visible"
+											}
+										}
+									],
+									"sid": 553001554895610,
+									"disabled": true
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [
+								{
+									"id": "compare-instance-variable",
+									"objectClass": "light",
+									"sid": 706648877335934,
+									"parameters": {
+										"instance-variable": "lightNumber",
+										"comparison": 0,
+										"value": "int(lightNumberList.SelectedIndex)+1"
+									}
+								}
+							],
+							"actions": [],
+							"sid": 326914061102170,
+							"children": [
+								{
+									"eventType": "comment",
+									"text": "The below is no longer needed since 1.1.2.  The Light 1 now has the option to be toggled on and off / dimmed."
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "compare-instance-variable",
+											"objectClass": "light",
+											"sid": 662622073073590,
+											"parameters": {
+												"instance-variable": "lightNumber",
+												"comparison": 0,
+												"value": "1"
+											}
+										}
+									],
+									"actions": [
+										{
+											"id": "set-visible",
+											"objectClass": "onOff",
+											"sid": 815111059822183,
+											"parameters": {
+												"visibility": "invisible"
+											}
+										}
+									],
+									"sid": 260592540279777,
+									"disabled": true
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "else",
+											"objectClass": "System",
+											"sid": 849213062827395
+										}
+									],
+									"actions": [
+										{
+											"id": "set-visible",
+											"objectClass": "onOff",
+											"sid": 959346979806873,
+											"parameters": {
+												"visibility": "visible"
+											}
+										}
+									],
+									"sid": 562025923205536,
+									"disabled": true
+								},
+								{
+									"eventType": "block",
+									"conditions": [],
+									"actions": [
+										{
+											"id": "set-position",
+											"objectClass": "light",
+											"sid": 445074598606357,
+											"parameters": {
+												"x": "xPosition.Value",
+												"y": "yPosition.Value"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "light",
+											"sid": 962748323135706,
+											"parameters": {
+												"instance-variable": "zPosition",
+												"value": "zPosition.Value"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "light",
+											"sid": 964266622933343,
+											"parameters": {
+												"instance-variable": "colorRed",
+												"value": "colorRed.Value"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "light",
+											"sid": 422907825452541,
+											"parameters": {
+												"instance-variable": "colorGreen",
+												"value": "colorGreen.Value"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "light",
+											"sid": 273859158497671,
+											"parameters": {
+												"instance-variable": "colorBlue",
+												"value": "colorBlue.Value"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "light",
+											"sid": 948218902666168,
+											"parameters": {
+												"instance-variable": "luminosity",
+												"value": "luminosity.Value"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "light",
+											"sid": 117925698533470,
+											"parameters": {
+												"instance-variable": "ambientColorRed",
+												"value": "ambientColorRed.Value"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "light",
+											"sid": 690451330347944,
+											"parameters": {
+												"instance-variable": "ambientColorGreen",
+												"value": "ambientColorGreen.Value"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "light",
+											"sid": 177797492961379,
+											"parameters": {
+												"instance-variable": "ambientColorBlue",
+												"value": "ambientColorBlue.Value"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "light",
+											"sid": 296626516589206,
+											"parameters": {
+												"instance-variable": "ambientLuminosity",
+												"value": "ambientLuminosity.Value"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "light",
+											"sid": 583454544664877,
+											"parameters": {
+												"instance-variable": "distance",
+												"value": "distanceLimit.Value"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "light",
+											"sid": 583493538508380,
+											"parameters": {
+												"instance-variable": "falloffV1",
+												"value": "falloffV1.Value"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "light",
+											"sid": 705769095147501,
+											"parameters": {
+												"instance-variable": "falloffV2",
+												"value": "falloffV2.Value"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "light",
+											"sid": 735507516659080,
+											"parameters": {
+												"instance-variable": "falloffV3",
+												"value": "falloffV3.Value"
+											}
+										},
+										{
+											"id": "set-instvar-value",
+											"objectClass": "light",
+											"sid": 537554641620180,
+											"parameters": {
+												"instance-variable": "dimmer",
+												"value": "dimmer.Value"
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "xPositionVal",
+											"sid": 186244228255477,
+											"parameters": {
+												"text": "xPosition.Value"
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "yPositionVal",
+											"sid": 363797374456669,
+											"parameters": {
+												"text": "yPosition.Value"
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "zPositionVal",
+											"sid": 917439462862959,
+											"parameters": {
+												"text": "zPosition.Value"
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "colorRedVal",
+											"sid": 213873098810327,
+											"parameters": {
+												"text": "colorRed.Value"
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "colorGreenVal",
+											"sid": 529774266301541,
+											"parameters": {
+												"text": "colorGreen.Value"
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "colorBlueVal",
+											"sid": 354265886678313,
+											"parameters": {
+												"text": "colorBlue.Value"
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "luminosityVal",
+											"sid": 543279293980742,
+											"parameters": {
+												"text": "luminosity.Value"
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "ambientRedVal",
+											"sid": 620982461044475,
+											"parameters": {
+												"text": "ambientColorRed.Value"
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "ambientGreenVal",
+											"sid": 845406603234752,
+											"parameters": {
+												"text": "ambientColorGreen.Value"
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "ambientBlueVal",
+											"sid": 194889529766435,
+											"parameters": {
+												"text": "ambientColorBlue.Value"
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "ambLuminVal",
+											"sid": 610540824764259,
+											"parameters": {
+												"text": "ambientLuminosity.Value"
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "distanceLimitVal",
+											"sid": 362871816196225,
+											"parameters": {
+												"text": "distanceLimit.Value"
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "falloffV1Val",
+											"sid": 741940072443451,
+											"parameters": {
+												"text": "falloffV1.Value"
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "falloffV2Val",
+											"sid": 156867150253385,
+											"parameters": {
+												"text": "falloffV2.Value"
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "falloffV3Val",
+											"sid": 749081880440054,
+											"parameters": {
+												"text": "falloffV3.Value"
+											}
+										},
+										{
+											"id": "set-text",
+											"objectClass": "dimmerVal",
+											"sid": 738906370161548,
+											"parameters": {
+												"text": "dimmer.Value"
+											}
+										}
+									],
+									"sid": 157805027740465
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "is-checked",
+											"objectClass": "onOff",
+											"sid": 382842949816018
+										}
+									],
+									"actions": [
+										{
+											"id": "set-boolean-instvar",
+											"objectClass": "light",
+											"sid": 496952450400239,
+											"parameters": {
+												"instance-variable": "onOff",
+												"value": "true"
+											}
+										}
+									],
+									"sid": 881102126034302
+								},
+								{
+									"eventType": "block",
+									"conditions": [
+										{
+											"id": "else",
+											"objectClass": "System",
+											"sid": 814294222301721
+										}
+									],
+									"actions": [
+										{
+											"id": "set-boolean-instvar",
+											"objectClass": "light",
+											"sid": 142434415330535,
+											"parameters": {
+												"instance-variable": "onOff",
+												"value": "false"
+											}
+										}
+									],
+									"sid": 222083363679418
+								}
+							]
+						},
+						{
+							"eventType": "block",
+							"conditions": [],
+							"actions": [],
+							"sid": 310652487916437
+						}
+					]
+				}
+			],
+			"sid": 999190966428223
+		}
+	],
+	"sid": 564058065156885
+}
