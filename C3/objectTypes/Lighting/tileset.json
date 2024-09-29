@@ -1,0 +1,29 @@
+{
+	"name": "tileset",
+	"plugin-id": "Tilemap",
+	"sid": 636078302162347,
+	"isGlobal": false,
+	"instanceVariables": [],
+	"behaviorTypes": [
+		{
+			"behaviorId": "solid",
+			"name": "Solid",
+			"sid": 761903709719952
+		}
+	],
+	"effectTypes": [],
+	"image": {
+		"width": 352,
+		"height": 240,
+		"originX": 0.5,
+		"originY": 0.5,
+		"originalSource": "",
+		"exportFormat": "lossless",
+		"exportQuality": 0.8,
+		"fileType": "image/png",
+		"imageSpriteId": 1234232,
+		"useCollisionPoly": true,
+		"tag": ""
+	},
+	"tile-collision-polys": {}
+}

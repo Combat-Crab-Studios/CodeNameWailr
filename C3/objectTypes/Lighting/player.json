@@ -1,0 +1,115 @@
+{
+	"name": "player",
+	"plugin-id": "Sprite",
+	"sid": 772219384833398,
+	"isGlobal": false,
+	"instanceVariables": [
+		{
+			"name": "state",
+			"type": "string",
+			"desc": "",
+			"show": true,
+			"sid": 771145706261558
+		},
+		{
+			"name": "defaultGravity",
+			"type": "number",
+			"desc": "",
+			"show": true,
+			"sid": 539482902206175
+		},
+		{
+			"name": "attackHit",
+			"type": "boolean",
+			"desc": "",
+			"show": true,
+			"sid": 950544010841350
+		},
+		{
+			"name": "attackLight1Damage",
+			"type": "number",
+			"desc": "",
+			"show": true,
+			"sid": 674762619527035
+		},
+		{
+			"name": "attackLight2Damage",
+			"type": "number",
+			"desc": "",
+			"show": true,
+			"sid": 812072214352947
+		},
+		{
+			"name": "attackThrustDamage",
+			"type": "number",
+			"desc": "",
+			"show": true,
+			"sid": 828806825227557
+		},
+		{
+			"name": "attackHeavyDamage",
+			"type": "number",
+			"desc": "",
+			"show": true,
+			"sid": 533024536550320
+		}
+	],
+	"behaviorTypes": [
+		{
+			"behaviorId": "Platform",
+			"name": "Platform",
+			"sid": 172099905639892
+		},
+		{
+			"behaviorId": "bound",
+			"name": "BoundToLayout",
+			"sid": 307940170475340
+		},
+		{
+			"behaviorId": "Timer",
+			"name": "Timer",
+			"sid": 501251925353279
+		},
+		{
+			"behaviorId": "scrollto",
+			"name": "ScrollTo",
+			"sid": 736893839881432
+		},
+		{
+			"behaviorId": "Tween",
+			"name": "Tween",
+			"sid": 145763457005944
+		}
+	],
+	"effectTypes": [],
+	"animations": {
+		"items": [
+			{
+				"frames": [
+					{
+						"width": 20,
+						"height": 32,
+						"originX": 0.5,
+						"originY": 1,
+						"originalSource": "",
+						"exportFormat": "lossless",
+						"exportQuality": 0.8,
+						"fileType": "image/png",
+						"imageSpriteId": 8888653,
+						"useCollisionPoly": true,
+						"duration": 1,
+						"tag": ""
+					}
+				],
+				"sid": 286094101876982,
+				"name": "Animation 1",
+				"isLooping": false,
+				"isPingPong": false,
+				"repeatCount": 1,
+				"repeatTo": 0,
+				"speed": 5
+			}
+		],
+		"subfolders": []
+	}
+}
